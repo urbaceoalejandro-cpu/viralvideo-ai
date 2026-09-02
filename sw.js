@@ -1,5 +1,7 @@
-const CACHE="viralvideo-ai-v1";
-const ASSETS=["./","./index.html","./manifest.webmanifest","./icon.svg"];
-self.addEventListener("install",e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS))));
+const CACHE="viralvideo-ai-v2";
+self.addEventListener("install",e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(["/","/index.html","/manifest.webmanifest","/icon.svg"]))));
 self.addEventListener("activate",e=>e.waitUntil(self.clients.claim()));
-self.addEventListener("fetch",e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));
+self.addEventListener("fetch",e=>{
+ if(e.request.method!=="GET") return;
+ e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)));
+});

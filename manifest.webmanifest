@@ -1,12 +1,17 @@
 {
   "name": "ViralVideo AI",
   "short_name": "ViralVideo AI",
-  "start_url": "./",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#0b0b10",
   "theme_color": "#0b0b10",
   "description": "Creador de videos de aproximadamente 3 minutos para YouTube.",
   "icons": [
-    {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
   ]
 }
