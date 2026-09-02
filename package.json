@@ -1,8 +1,12 @@
 {
-  "name": "viralvideo-ai",
-  "version": "2.0.0",
+  "name": "viralvideo-ai-free",
+  "version": "3.0.0",
   "private": true,
   "type": "commonjs",
-  "scripts": {"start":"node server.js"},
-  "dependencies": {"express":"^5.1.0"}
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
 }
