@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0b10">
+<meta name="description" content="ViralVideo AI - creador de videos para YouTube">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>ViralVideo AI</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0b0b10;color:#fff;font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+.wrap{max-width:720px;margin:auto;padding:24px 18px 42px}.brand{font-size:29px;font-weight:800;margin-bottom:5px}
+.sub{color:#aaa;font-size:14px;margin-bottom:24px}.card{background:#15151e;border:1px solid #272735;border-radius:20px;padding:18px;margin-bottom:14px}
+label{display:block;color:#aaa;font-size:12px;font-weight:700;margin-bottom:8px;text-transform:uppercase}
+textarea,select,input{width:100%;background:#0f0f16;color:#fff;border:1px solid #30303e;border-radius:12px;padding:14px;font-size:16px;outline:none}
+textarea{min-height:115px;resize:vertical}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+button{width:100%;border:0;border-radius:14px;padding:15px;font-size:16px;font-weight:800;color:#fff;background:#7c4dff;cursor:pointer}
+button:disabled{opacity:.55}.secondary{background:#242431}.status{color:#bdbdcc;line-height:1.5;white-space:pre-line}.scene{padding:12px;border-radius:12px;background:#101018;margin-top:9px;border:1px solid #292936}.small{font-size:12px;color:#9696a6}
+.progress{height:8px;background:#272735;border-radius:99px;overflow:hidden;margin:12px 0}.bar{height:100%;width:0;background:#7c4dff;transition:.25s}
+@media(max-width:520px){.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<div class="brand">🔥 ViralVideo AI</div>
+<div class="sub">Creador de videos de aproximadamente 3 minutos para YouTube.</div>
+
+<section class="card">
+<label>Tema del video</label>
+<textarea id="topic" placeholder="Ej: 5 misterios del océano que nadie puede explicar"></textarea>
+</section>
+
+<section class="card">
+<div class="row">
+<div><label>Estilo</label><select id="style">
+<option>Viral / Cinematográfico</option><option>Gaming</option><option>Noticias / Actualidad</option>
+<option>Misterio / Terror</option><option>Tecnología</option><option>Deportes</option><option>Entretenimiento</option>
+</select></div>
+<div><label>Voz</label><select id="voice">
+<option>Masculina</option><option>Femenina</option><option>Energética</option><option>Documental</option>
+</select></div>
+</div>
+</section>
+
+<section class="card">
+<button id="generate">🚀 GENERAR VIDEO</button>
+<div class="progress"><div id="bar" class="bar"></div></div>
+<div id="status" class="status">Listo para crear tu próximo video.</div>
+</section>
+
+<section id="result" class="card" hidden>
+<label>Estructura generada</label>
+<div id="scenes"></div>
+<button id="copy" class="secondary" style="margin-top:14px">📋 COPIAR GUION</button>
+</section>
+
+<section class="card">
+<div class="small">Esta PWA es la interfaz local. Para generar realmente voz, imágenes/video y MP4 con IA hay que conectar APIs de generación y un servidor de renderizado.</div>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+let generated="";
+function makeScenes(topic,style){
+ const clean=topic.trim();
+ return [
+  ["GANCHO","Abre con la idea más sorprendente de «"+clean+"». Presenta una pregunta o afirmación que genere curiosidad inmediata."],
+  ["CONTEXTO","Explica rápidamente por qué «"+clean+"» es interesante y qué descubrirá el espectador."],
+  ["DESARROLLO","Presenta los datos, hechos o momentos principales de forma dinámica, usando ejemplos visuales y cambios de ritmo."],
+  ["PUNTO CLAVE","Muestra el dato o giro más impactante relacionado con el tema. Mantén la tensión y evita información innecesaria."],
+  ["CIERRE","Resume la idea principal y termina con una frase que deje al espectador pensando o esperando el siguiente video."]
+ ].map((x,i)=>({n:i+1,title:x[0],text:x[1],style}));
+}
+$("generate").onclick=()=>{
+ const topic=$("topic").value.trim();
+ if(!topic){$("topic").focus();return}
+ $("generate").disabled=true;$("result").hidden=true;
+ let p=0; const timer=setInterval(()=>{p=Math.min(95,p+19);$("bar").style.width=p+"%"},180);
+ setTimeout(()=>{
+  clearInterval(timer);$("bar").style.width="100%";
+  const scenes=makeScenes(topic,$("style").value);
+  generated=scenes.map(s=>s.title+": "+s.text).join("\\n\\n");
+  $("scenes").innerHTML=scenes.map(s=>`<div class="scene"><b>${s.n}. ${s.title}</b><div class="small">${s.text}</div></div>`).join("");
+  $("status").textContent="✅ Estructura lista. Duración objetivo: ~3 minutos.\\nEstilo: "+$("style").value+" · Voz: "+$("voice").value;
+  $("result").hidden=false;$("generate").disabled=false;
+ },1000);
+};
+$("copy").onclick=async()=>{
+ try{await navigator.clipboard.writeText(generated);$("copy").textContent="✅ GUION COPIADO";setTimeout(()=>$("copy").textContent="📋 COPIAR GUION",1400)}
+ catch(e){alert(generated)}
+};
+</script>
+</body>
+</html>
